@@ -4,6 +4,7 @@ import com.ftn.udd.enumeration.UserType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class User {
 
+    @Id
     private String firstName;
     private String lastName;
     private String city;
