@@ -14,22 +14,24 @@ import java.util.List;
 public class User {
 
     @Id
+    private String email;
+    private String password;
     private String firstName;
     private String lastName;
     private String city;
     private String country;
-    private String email;
-    private UserType title;
+    private UserType userType;
     private List<Journal> journals;
     private List<AreaCode> areaCodes;
 
-    public User(String firstName, String lastName, String city, String country, String email, UserType title, List<Journal> journals, List<AreaCode> areaCodes) {
+    public User(String email, String password, String firstName, String lastName, String city, String country, UserType userType, List<Journal> journals, List<AreaCode> areaCodes) {
+        this.email = email;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.city = city;
         this.country = country;
-        this.email = email;
-        this.title = title;
+        this.userType = userType;
         this.journals = journals;
         this.areaCodes = areaCodes;
     }

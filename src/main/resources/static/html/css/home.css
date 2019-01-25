@@ -1,0 +1,51 @@
+.carousel-inner > .item > img {
+    margin: 0 auto;
+}
+
+.slajdTekst{
+	color:black;
+}
+
+.registerForma{
+	margin: 0 auto;
+	width: 30%;
+}
+
+.col-form-label{
+	width: 23%;
+}
+
+.col-xs-10{
+	width: 50%;
+}
+
+.dugmad{
+    width: 50%;
+    margin: 0 auto;
+}
+
+#dugme{
+	text-decoration: none;
+  	color: initial;
+}
+
+.loginDugmad{
+	 position: absolute;
+ 	 left: 50%;
+ 	 margin-left: -100px;
+}
+
+.naslovPD{
+	width: 25%;
+    margin: 0 auto;
+}
+
+.sidebar {
+width: 250px;
+background: #333333;
+}
+
+#cpDugmad{
+    width: 50%;
+    margin: 0 auto;
+}

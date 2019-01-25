@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -18,10 +16,35 @@ public class UserController {
     @Autowired
     private UserRepository repository;
 
+    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json")
+    public String login(@RequestParam("email") String email, @RequestParam("password") String password){
+
+        System.out.println(email + password);
+        if(email.isEmpty() || password.isEmpty())
+            return "nill";
+
+        User u = repository.findByEmail(email);
+        if(u == null) {
+            return "nouser";
+        }else{
+            if(!u.getPassword().equals(password)){
+                return "badpass";
+            }else{
+                if(u.getUserType().equals(UserType.USER))
+                    return "ok";
+                if(u.getUserType().equals(UserType.AUTHOR))
+                    return "author";
+                if(u.getUserType().equals(UserType.CHIEF_EDITOR))
+                    return "chiefeditor";
+            }
+        }
+        return "nill";
+    }
+
     @RequestMapping(value = "/add", method = RequestMethod.GET, produces = "application/json")
     public void add(){
 
-        User u1 = new User("ime", "prezime", "NS", "Srb", "email@mail.com", UserType.USER, null, null);
+        User u1 = new User("email@mail.com", "12345", "testime", "lastname","NS", "Srb",UserType.USER, null, null);
         repository.save(u1);
 
     }
