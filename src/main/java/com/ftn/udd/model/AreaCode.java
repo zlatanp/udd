@@ -3,18 +3,21 @@ package com.ftn.udd.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class AreaCode {
 
-    private String name;
+    @Id
     private String code;
+    private String name;
 
-    public AreaCode(String name, String code){
-        this.name = name;
+
+    public AreaCode(String code, String name){
         this.code = code;
+        this.name = name;
     }
 
 }

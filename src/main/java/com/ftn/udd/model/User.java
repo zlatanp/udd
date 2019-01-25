@@ -21,10 +21,9 @@ public class User {
     private String city;
     private String country;
     private UserType userType;
-    private List<Journal> journals;
     private List<AreaCode> areaCodes;
 
-    public User(String email, String password, String firstName, String lastName, String city, String country, UserType userType, List<Journal> journals, List<AreaCode> areaCodes) {
+    public User(String email, String password, String firstName, String lastName, String city, String country, UserType userType, List<AreaCode> areaCodes) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
@@ -32,7 +31,6 @@ public class User {
         this.city = city;
         this.country = country;
         this.userType = userType;
-        this.journals = journals;
         this.areaCodes = areaCodes;
     }
 }

@@ -36,23 +36,37 @@ public class UserController {
                     return "author";
                 if(u.getUserType().equals(UserType.CHIEF_EDITOR))
                     return "chiefeditor";
+                if(u.getUserType().equals(UserType.ADMIN))
+                    return "admin";
             }
         }
         return "nill";
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET, produces = "application/json")
-    public void add(){
+    @RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json")
+    public String register(@RequestParam("email") String email, @RequestParam("pass") String pass, @RequestParam("passRepeat") String passRepeat, @RequestParam("firstName") String firstname, @RequestParam("lastName") String lastName, @RequestParam("city") String city, @RequestParam("country") String country, @RequestParam("type") String type){
 
-        User u1 = new User("email@mail.com", "12345", "testime", "lastname","NS", "Srb",UserType.USER, null, null);
-        repository.save(u1);
+        System.out.println(type);
+        if(email.isEmpty() || pass.isEmpty() || passRepeat.isEmpty() || firstname.isEmpty() || lastName.isEmpty() || city.isEmpty() || country.isEmpty())
+            return "nill";
 
-    }
+        if(!pass.equals(passRepeat))
+            return "passwordmatch";
 
-    @RequestMapping(value = "/getByEmail", method = RequestMethod.POST, produces = "application/json")
-    public User getAllFromCategory(@RequestParam("email") String email){
-
-        return repository.findByEmail(email);
+        User u = repository.findByEmail(email);
+        if(u != null) {
+            return "used";
+        }else {
+            if (type.equals("USER") || type.equals("Author")) {
+                User user = new User(email, pass, firstname, lastName, city, country, UserType.USER, null);
+                repository.save(user);
+            }else{
+                //Area codes iz sifarnika
+                User user = new User(email, pass, firstname, lastName, city, country, UserType.USER, null);
+                repository.save(user);
+            }
+            return "ok";
+        }
     }
 
 }
