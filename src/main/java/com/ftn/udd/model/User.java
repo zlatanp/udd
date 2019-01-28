@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -21,9 +22,9 @@ public class User {
     private String city;
     private String country;
     private UserType userType;
-    private List<AreaCode> areaCodes;
+    private ArrayList<AreaCode> areaCodes;
 
-    public User(String email, String password, String firstName, String lastName, String city, String country, UserType userType, List<AreaCode> areaCodes) {
+    public User(String email, String password, String firstName, String lastName, String city, String country, UserType userType, ArrayList<AreaCode> areaCodes) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;

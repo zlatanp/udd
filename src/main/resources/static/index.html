@@ -1,341 +1,149 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
-    <link rel="stylesheet" href="html/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="html/css/bootstrap-theme.min.css" />
-    <link rel="stylesheet" href="html/css/toastr.css" />
-    <link rel="stylesheet" href="html/css/toastr.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="html/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="html/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="html/css/toastr.css"/>
+    <link rel="stylesheet" href="html/css/toastr.min.css"/>
     <script src="html/js/jquery-3.1.0.min.js"></script>
     <script src="html/js/jquery.min.js"></script>
     <script src="html/js/bootstrap.js"></script>
     <script src="html/js/bootstrap.min.js"></script>
     <script src="html/js/toastr.js"></script>
     <script src="html/js/toastr.min.js"></script>
+    <script src="html/js/homescript.js"></script>
 
-    <link rel="stylesheet" href="html/css/animate.css" type="text/css" />
+    <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 
-    <link rel="stylesheet" href="html/css/rmodal.css" type="text/css" />
-    <script type="text/javascript" src="html/js/rmodal.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css"/>
 
-    <link rel="stylesheet" type="text/css" href="html/css/looknfeel.css">
-    <meta charset="ISO-8859-1">
 
-    <title>Index Page</title>
-    <script type="text/javascript">
+    <meta charset="UTF-8">
+    <title>WebShop Home</title>
 
-var x = document.cookie;
-var parts = x.split("email@");
-var cookie = parts[1];
-
-if("undefined" !== typeof cookie){
-    window.location.href="home.html";
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="html/css/home.css">
+    <style type="text/css">
+    body {
+	    padding-top: 50px;
+        background-color: #e6e6e6;
 }
 
-        window.onload = function() {
-            var modal = new RModal(document.getElementById('modal'), {
-                //content: 'Abracadabra'
-                beforeOpen: function(next) {
-                    console.log('beforeOpen');
-                    next();
-                }
-                , afterOpen: function() {
-                    console.log('opened');
-                }
-
-                , beforeClose: function(next) {
-                    console.log('beforeClose');
-                    next();
-                }
-                , afterClose: function() {
-                    console.log('closed');
-                }
-                // , bodyClass: 'modal-open'
-                // , dialogClass: 'modal-dialog modal-dialog-lg'
-                // , dialogOpenClass: 'animated fadeIn'
-                // , dialogCloseClass: 'animated fadeOut'
-
-                // , focus: true
-                // , focusElements: ['input.form-control', 'textarea', 'button.btn-primary']
-
-                // , escapeClose: true
-            });
-
-            document.addEventListener('keydown', function(ev) {
-                modal.keydown(ev);
-            }, false);
-
-            document.getElementById('showModal').addEventListener("click", function(ev) {
-                ev.preventDefault();
-                modal.open();
-            }, false);
-
-            window.modal = modal;
-
-
-        }
-    </script>
+    </style>
 </head>
 <body>
-<div class="container">
-    <div class="row">
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-    </div>
-</div>
-<br>
-<br>
-<div class="container">
-    <div class="row">
-        <div class="col-md-4 col-md-offset-4">
-            <div class="form-body">
-                <ul class="nav nav-tabs final-login">
-                    <li class="active"><a data-toggle="tab" href="#sectionA">Sign In</a></li>
-                    <li><a data-toggle="tab" href="#sectionB">Join us!</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div id="sectionA" class="tab-pane fade in active">
-                        <div class="innter-form">
-                            <div class="sa-innate-form">
-                                <label>Email</label>
-                                <input type="text" name="email">
-                                <label>Password</label>
-                                <input type="password" name="password">
-                                <button type="submit" onclick="return loginFunction()">Sign In</button>
-                                <a href="" id="showModal">Forgot Password?</a>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div id="sectionB" class="tab-pane fade">
-                        <div class="innter-form">
-                            <div class="sa-innate-form" >
-                                <label>Email</label>
-                                <input type="email" name="emailRegister">
-                                <label>Password</label>
-                                <input type="password" name="passwordRegister">
-                                <label>Confirm Password</label>
-                                <input type="password" name="password1Register">
-                                <label>Name</label>
-                                <input type="text" name="nameRegister">
-                                <label>Lastname</label>
-                                <input type="text" name="lastnameRegister">
-                                <label>City</label>
-                                <input type="text" name="cityRegister">
-                                <label>Country</label>
-                                <input type="text" name="countryRegister">
-                                <label>Type</label>
-                                <select id="typeSelect" onchange="changeType()">
-                                    <option value="user">User</option>
-                                    <option value="author">Author</option>
-                                    <option value="chiefeditor">Chief Editor</option>
-                                </select>
-                                <label>Area Codes</label>
-                                <select multiple id="areaCodesSelect">
-                                    <option value="empty">Empty</option>
-                                </select>
+<!--  ********************************* NAVIGATION BAR ********************************* -->
 
-                                <button type="submit" onclick="return registerFunction()">Join now</button>
-                                <p>By clicking Join now, you agree to Restaurant's User Agreement, Privacy Policy, and Cookie Policy.</p>
-                            </div>
-                        </div>
-                        <br>
-                        <br>
+<nav id="myNavbar"
+     class="navbar navbar-inverse navbar-fixed-top"
+     role="navigation">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#navbarCollapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span> <!-- crtica -->
+                <span class="icon-bar"></span> <!-- crtica -->
+                <span class="icon-bar"></span> <!-- crtica -->
+            </button>
+            <a class="navbar-brand" href="index.html"><img height="27" src="html/img/webshop.png"/></a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">Home</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li id="korpa"><span class="glyphicon glyphicon-shopping-cart"></span> Card</a>
+                </li>
+                <li id="usernamePlace"><a id="usernamePlaceholder" href="#"><span
+                        class="glyphicon glyphicon-user"></span></a></li>
+                <li id="login"><a href="#" onclick="login()"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <li id="logout"><a href="#" onclick="logout()"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ********************************* SLIDE ********************************* -->
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" role="listbox">
+        <div class="item active ">
+            <img src="html/img/webshopslajd2.png" alt="PC">
+            <div class="carousel-caption">
+                <h4 class="slajdTekst">Buying from your home.</h4>
+            </div>
+        </div>
+
+        <div class="item">
+            <img src="html/img/webshopslajd3.png" alt="Enter">
+            <div class="carousel-caption">
+                <h4 class="slajdTekst">Simple and efficient ordering.</h4>
+            </div>
+        </div>
+
+        <div class="item">
+            <img src="html/img/webshopslajd1.jpg" alt="Korpa">
+            <div class="carousel-caption">
+                <h4 class="slajdTekst">Home delivery</h4>
+            </div>
+        </div>
+
+    </div>
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel" role="button"
+       data-slide="prev"> <span class="glyphicon glyphicon-chevron-left"
+                                aria-hidden="true"></span> <span class="sr-only">Previous</span>
+    </a> <a class="right carousel-control" href="#myCarousel" role="button"
+            data-slide="next"> <span
+        class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+</a>
+</div>
+
+<!-- ********************************* LEFT CATEGORIES ********************************* -->
+<div class="container">
+    <div class="row">
+        <div class=".col-xs-6 .col-sm-8 .col-lg-10 pull-left sidebar">
+            <div class="navbar-form navbar-left">
+                <div class="form-group">
+                    <div class="form-group" style="color: white" id="categories">
+
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<div id="modal" class="modal">
-    <div class="modal-dialog animated">
-        <div class="modal-content">
-            <form class="form-horizontal" method="get" action="korisnik/recover">
-                <div class="modal-header">
-                    <strong>Forgot Password?</strong>
-                </div>
+        <!-- ********************************* CENTER ********************************* -->
+        <div class=".col-xs-6 .col-sm-8 .col-lg-10 ">
+            <form class="navbar-form navbar-left">
+                <div class="form-group" id="center">
 
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="dummyText" class="control-label col-xs-4">Enter your email adress and we'll send you password:</label>
-                        <div class="input-group col-xs-7">
-                            <input type="text" name="email" id="email" class="form-control" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-default" type="button" onclick="modal.close();">Cancel</button>
-                    <button class="btn btn-primary" type="submit" onclick="modal.close();">Recover password</button>
                 </div>
             </form>
         </div>
+
+        <!-- ********************************* RIGHT SEARCH ********************************* -->
+        <div class=".col-xs-6 .col-sm-8 .col-lg-10 pull-right">
+            <div class="navbar-form navbar-left">
+                <div class="form-group">
+                    <button type="button" onclick="return searchItems()" class="btn btn-default">Search</button>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
-
-<script>
-
-    function changeType(){
-        var type = $('#typeSelect').find(":selected").text();
-
-        if(type == "Chief Editor"){
-            $.ajax({
-            type: 'GET',
-            url: 'areacode/getAll',
-            dataType: 'json',
-     		success: function(data){
-             	console.log(data);
-             	if(data.length > 0){
-             	            $("#areaCodesSelect option[value='empty']").remove();
-                            for(var i =0; i<data.length; i++){
-                                $('#areaCodesSelect').append('<option>' + data[i].name + '</option>');
-                            }
-                         }
-            }
-            });
-        }else{
-            $('#areaCodesSelect').find('option').remove().end().append('<option value="empty">Empty</option>').val('whatever');
-        }
-    }
-
-
-    function loginFunction(){
-    	var i = document.getElementsByName('email');
-    	var emailValue = i[0].value;
-    	var j = document.getElementsByName('password');
-    	var passValue = j[0].value;
-
-
-     	if(email!="" && passValue!=""){
-     	$.ajax({
-            type: 'POST',
-            url: 'user/login',
-            dataType: 'json',
-            data: {email : emailValue, password : passValue},
-     		success: function(data){
-             	console.log(data);
-            },
-            complete: function(data){
-    		            var response = data.responseText;
-    		            console.log(response);
-    		            if(response == "nill")
-    		                toastr.error("Some fields are empty!")
-
-    		            if(response == "nouser")
-    		                toastr.error("User with username: " +emailValue+ " does not exist!")
-
-    		             if(response == "badpass")
-    		                toastr.info("Bad password!")
-
-    		            if(response == "ok"){
-    		                toastr.success("Successful login!")
-    		                document.cookie = "email@buyer#" + emailValue;
-    		                setTimeout(location.reload.bind(location), 1500);
-    		            }
-
-    		            if(response == "author"){
-    		                toastr.success("Successful login!")
-    		                document.cookie = "email@author#" + emailValue;
-    		                setTimeout(location.reload.bind(location), 1500);
-    		            }
-
-    		            if(response == "chiefeditor"){
-    		                toastr.success("Successful login!")
-    		                document.cookie = "email@chiefeditor#" + emailValue;
-    		                setTimeout(location.reload.bind(location), 1500);
-    		            }
-
-    		 }
-     	});
-     	}else{
-     		toastr.error("Email or password can't be empty!");
-     	}
-
-    }
-
-    function registerFunction(){
-
-    	var i = document.getElementsByName('emailRegister');
-    	var emailValue = i[0].value;
-
-    	var j = document.getElementsByName('passwordRegister');
-    	var passwordValue = j[0].value;
-
-    	var k = document.getElementsByName('password1Register');
-    	var password1Value = k[0].value;
-
-    	var l = document.getElementsByName('nameRegister');
-    	var nameValue = l[0].value;
-
-    	var m = document.getElementsByName('lastnameRegister');
-    	var lastnameValue = m[0].value;
-
-    	var n = document.getElementsByName('cityRegister');
-    	var cityValue = n[0].value;
-
-        var o = document.getElementsByName('countryRegister');
-    	var countryValue = o[0].value;
-
-    	var type = $('#typeSelect').find(":selected").text();
-
-    	if(emailValue=="" || passwordValue=="" || password1Value=="" || nameValue=="" || lastnameValue=="" || cityValue=="" || countryValue==""){
-    		toastr.error("You must enter all fields!");
-    		return false;
-        }else{
-        	if(passwordValue.length <8){
-        		toastr.error("Password must contain 8-30 characters!")
-        		return false;
-        	}
-        	if(passwordValue.length > 30){
-        		toastr.error("Password must contain 8-30 characters!")
-        		return false;
-        	}
-
-        	if(passwordValue != password1Value){
-        		toastr.error("Password does not match the confirm password!")
-        		return false;
-        	}
-
-
-        	$.ajax({
-            type: 'POST',
-            url: 'user/register',
-            dataType: 'json',
-            data: {email : emailValue, pass : passwordValue, passRepeat : password1Value, firstName : nameValue, lastName : lastnameValue, city : cityValue, country : countryValue, type : type},
-    		 success: function(data){
-            			console.log(data);
-            			//location.reload();
-    		 },
-    		 complete: function(data){
-    		            var response = data.responseText;
-    		            console.log(response);
-    		            if(response == "nill")
-    		                toastr.error("Some fields are empty!")
-
-    		            if(response == "passwordmatch")
-    		                toastr.error("Password doesn't match!")
-
-    		             if(response == "used")
-    		                toastr.info("Username already used!")
-
-    		            if(response == "ok"){
-    		                toastr.success("Successful registration!")
-    		                setTimeout(location.reload.bind(location), 2500);
-    		            }
-
-    		 }
-    	});
-
-        }
-    }
-
-
-    </script>
-
 </body>
 </html>
