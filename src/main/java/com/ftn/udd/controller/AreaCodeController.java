@@ -16,7 +16,7 @@ import java.util.List;
 public class AreaCodeController {
 
     @Autowired
-    private AreaCodeRepository repository;
+    private AreaCodeRepository areaCodeRepository;
 
     @RequestMapping(value = "/init", method = RequestMethod.GET, produces = "application/json")
     public String init() {
@@ -44,7 +44,7 @@ public class AreaCodeController {
         areaCodes.add(new AreaCode("7.01","Sport"));
 
         for (AreaCode ac: areaCodes) {
-            repository.save(ac);
+            areaCodeRepository.save(ac);
         }
 
         return "ok";
@@ -53,12 +53,12 @@ public class AreaCodeController {
     @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
     public List<AreaCode> getAll(){
 
-        return repository.findAll();
+        return areaCodeRepository.findAll();
     }
 
     @RequestMapping(value = "/deleteCode", method = RequestMethod.POST, produces = "application/json")
     public void removeByCode(@RequestParam("code") String areaCode){
-        repository.deleteById(areaCode);
+        areaCodeRepository.deleteById(areaCode);
     }
 
     @RequestMapping(value = "/addCode", method = RequestMethod.POST, produces = "application/json")
@@ -68,12 +68,12 @@ public class AreaCodeController {
         if(areaCode.isEmpty() || areaName.isEmpty())
             return "nill";
 
-        ac = repository.findByCode(areaCode);
+        ac = areaCodeRepository.findByCode(areaCode);
         if(ac != null)
             return "codeErr";
 
         ac = new AreaCode(areaCode, areaName);
-        repository.save(ac);
+        areaCodeRepository.save(ac);
         return "ok";
     }
 

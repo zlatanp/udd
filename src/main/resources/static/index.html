@@ -146,6 +146,14 @@
                             </thead>
                             </tbody>
                         </table>
+                        <table id="journalTable" style="width:100%">
+                            <thead>
+                            <tr>
+                                <th style="width:20%">ISSNNumber</th><th style="width:10%">Name</th><th style="width:20%">Chief Editor</th><th>Areas</th>
+                            </tr>
+                            </thead>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </form>
@@ -171,6 +179,36 @@
         <br>
         <br>
         <button onclick="return addNewAreaCode()" id="dialogAdd">Save</button>
+    </div>
+
+    <div id="dialog2" title="Add new Journal">
+        <form method="POST" action="/journal/add" enctype="multipart/form-data" onsubmit="return addNewJournalSubmit()">
+            <p>ISSNNumber</p>
+            <input name="dissnNumber" type="text" id="dissnNumber">
+            <br>
+            <p>Name</p>
+            <input name="dJournalName" type="text" id="dJournalName">
+            <br>
+            <p>Chief Editor</p>
+            <select id="DchiefEditorSelect" name="dchiefEditor">
+                <option value="empty">Empty</option>
+            </select>
+            <br>
+            <p>Area Codes</p>
+            <select multiple id="DareaCodesSelect" name="listAreaCodes">
+            <option value="empty">Empty</option>
+            </select>
+            <br>
+            <p>Other Editors</p>
+            <select multiple id="DotherEditorsSelect" name="listEditors">
+            <option value="empty">Empty</option>
+            </select>
+            <br>
+            <br>
+            <p>Select Image</p>
+            <input type="file" name="file" /><br/><br/>
+            <input type="submit" value="Submit"/>
+        </form>
     </div>
 </div>
 </body>

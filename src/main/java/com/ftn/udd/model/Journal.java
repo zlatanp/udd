@@ -3,6 +3,8 @@ package com.ftn.udd.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.Binary;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
@@ -11,17 +13,20 @@ import java.util.List;
 @NoArgsConstructor
 public class Journal {
 
-    private String name;
+    @Id
     private String ISSNNumber;
+    private String name;
     private List<AreaCode> areaCodes;
     private User chiefEditor;
     private List<User> otherEditors;
+    private Binary image;
 
-    public Journal(String name, String ISSNNumber, List<AreaCode> areaCodes, User chiefEditor, List<User> otherEditors) {
-        this.name = name;
+    public Journal(String ISSNNumber, String name, List<AreaCode> areaCodes, User chiefEditor, List<User> otherEditors, Binary image) {
         this.ISSNNumber = ISSNNumber;
+        this.name = name;
         this.areaCodes = areaCodes;
         this.chiefEditor = chiefEditor;
         this.otherEditors = otherEditors;
+        this.image = image;
     }
 }
