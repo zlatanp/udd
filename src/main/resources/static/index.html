@@ -118,8 +118,16 @@
         <div class=".col-xs-6 .col-sm-8 .col-lg-10 pull-left sidebar">
             <div class="navbar-form navbar-left">
                 <div class="form-group">
-                    <div class="form-group" style="color: white" id="categories">
-
+                    <div class="form-group" style="color: white">
+                        <div class="adminLeft">
+                            <button type="button" onclick="return newJournal()" class="btn btn-default">Add New Journal</button>
+                            </p>
+                            <button type="button" onclick="return allJournals()" class="btn btn-default">All Journals</button>
+                            </p>
+                            <button type="button" onclick="return newAreaCode()" class="btn btn-default">Add Area Code</button>
+                            </p>
+                            <button type="button" onclick="return allAreaCodes()" class="btn btn-default">All Area Codes</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -129,7 +137,16 @@
         <div class=".col-xs-6 .col-sm-8 .col-lg-10 ">
             <form class="navbar-form navbar-left">
                 <div class="form-group" id="center">
-
+                    <div class="adminCenter">
+                        <table id="areaCodeTable" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th style="width:10%">CODE</th><th style="width:30%">Name</th>
+                                </tr>
+                            </thead>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </form>
         </div>
@@ -143,6 +160,17 @@
 
             </div>
         </div>
+    </div>
+
+    <div id="dialog" title="Add new Area Code">
+        <p>Code</p>
+        <input name="dCode" type="text" id="dCode">
+        <br>
+        <p>Name</p>
+        <input name="dName" type="text" id="dName">
+        <br>
+        <br>
+        <button onclick="return addNewAreaCode()" id="dialogAdd">Save</button>
     </div>
 </div>
 </body>

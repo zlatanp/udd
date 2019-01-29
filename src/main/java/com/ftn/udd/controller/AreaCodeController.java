@@ -5,6 +5,7 @@ import com.ftn.udd.repository.AreaCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -53,6 +54,27 @@ public class AreaCodeController {
     public List<AreaCode> getAll(){
 
         return repository.findAll();
+    }
+
+    @RequestMapping(value = "/deleteCode", method = RequestMethod.POST, produces = "application/json")
+    public void removeByCode(@RequestParam("code") String areaCode){
+        repository.deleteById(areaCode);
+    }
+
+    @RequestMapping(value = "/addCode", method = RequestMethod.POST, produces = "application/json")
+    public String register(@RequestParam("code") String areaCode, @RequestParam("name") String areaName){
+        AreaCode ac = null;
+
+        if(areaCode.isEmpty() || areaName.isEmpty())
+            return "nill";
+
+        ac = repository.findByCode(areaCode);
+        if(ac != null)
+            return "codeErr";
+
+        ac = new AreaCode(areaCode, areaName);
+        repository.save(ac);
+        return "ok";
     }
 
 }
