@@ -3,7 +3,8 @@
 }
 
 .slajdTekst{
-	color:black;
+    font-size: 20px;
+	text-shadow: 3px 2px black;
 }
 
 .registerForma{
