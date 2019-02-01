@@ -16,6 +16,8 @@ $(document).ready(function(){
 
    $('#areaCodeTable').hide();
    $('#journalTable').hide();
+   $('#allMagazines').show();
+   getAllMagazines();
     $( function() {
           $("#dialog").dialog({
                autoOpen: false,
@@ -89,6 +91,7 @@ function login(){
 function searchItems(){
     $('#areaCodeTable').hide();
     $('#journalTable').hide();
+    $('#allMagazines').hide();
     $("#dialog").dialog('close');
     $("#dialog2").dialog('close');
     alert("search");
@@ -99,6 +102,7 @@ function newJournal(){
     $('#journalTable').hide();
     $("#dialog").dialog('close');
     $("#dialog2").dialog('open');
+    $('#allMagazines').hide();
 
     $.ajax({
         type: 'GET',
@@ -124,11 +128,11 @@ function newJournal(){
             if(data.length > 0){
                 $("#DchiefEditorSelect option[value='empty']").remove();
                 $("#DotherEditorsSelect option[value='empty']").remove();
+                $('#DchiefEditorSelect').append('<option>Choose Chief Editor</option>');
+                $('#DotherEditorsSelect').append('<option>None</option>');
                 for(var i =0; i<data.length; i++){
                     if(data[i].email !== email && data[i].userType === "CHIEF_EDITOR"){
-                        $('#DchiefEditorSelect').append('<option>Choose Chief Editor</option>');
                         $('#DchiefEditorSelect').append('<option>' + data[i].email + '</option>');
-                        $('#DotherEditorsSelect').append('<option>None</option>');
                         $('#DotherEditorsSelect').append('<option>' + data[i].email + '</option>');
                     }
                 }
@@ -210,6 +214,7 @@ function allJournals(){
     $('#journalTable').show();
     $("#dialog").dialog('close');
     $("#dialog2").dialog('close');
+    $('#allMagazines').hide();
 
     $.ajax({
             type: 'GET',
@@ -270,6 +275,7 @@ function newAreaCode(){
     $('#journalTable').hide();
     $("#dialog").dialog("open");
     $("#dialog2").dialog('close');
+    $('#allMagazines').hide();
 
 }
 
@@ -315,6 +321,7 @@ function allAreaCodes(){
     $("#dialog2").dialog('close');
     $('#areaCodeTable').show();
     $('#journalTable').hide();
+    $('#allMagazines').hide();
     $.ajax({
         type: 'GET',
         url: 'areacode/getAll',
@@ -342,6 +349,26 @@ function deleteArea(areaCode){
         complete: function(data){
             toastr.success("Successfully removed Area with code " + areaCode + " !");
             allAreaCodes();
+        }
+    });
+}
+
+function getAllMagazines(){
+    $.ajax({
+        type: 'GET',
+        url: 'journal/getAll',
+        dataType: 'json',
+        success: function(data){
+            console.log(data);
+            $("#magazineTable").empty();
+            if(data.length > 0){
+                for(var i =0; i<data.length; i++){
+                    var image = data[i].image;
+                    $("#magazineTable").append('<div class="column"><img src="data:image/png;base64,' + image.data + '"/ style="width:100%" class="zoom"></br><p align="center"><b> ' + data[i].name + ' </b></p></div>');
+                }
+            }else{
+                $("#magazineTable").append('No Magazines!');
+            }
         }
     });
 }
