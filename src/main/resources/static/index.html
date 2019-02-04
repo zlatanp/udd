@@ -14,6 +14,9 @@
     <script src="html/js/toastr.min.js"></script>
     <script src="html/js/homescript.js"></script>
 
+    <script src="html/js/jquery.tagsinput.js"></script>
+    <link rel="stylesheet" type="text/css" href="html/js/jquery.tagsinput.css" />
+
     <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css"/>
@@ -126,6 +129,12 @@
                             </p>
                             <button type="button" onclick="return allAreaCodes()" class="btn btn-default">All Area Codes</button>
                         </div>
+                        </br>
+                        <table id="aboutMagazine">
+                            </tbody>
+                        </table>
+                        </br>
+                        <button id="addArticleButton" onclick="return addArticleButton()">Add New Article</button>
                     </div>
                 </div>
             </div>
@@ -160,6 +169,13 @@
                 <h3>All magazines: </h3>
                 <div id="magazineTable">
                 </div>
+            </div>
+
+            <div id="articles">
+                <h3>Articles: </h3>
+                <table id="articleTable">
+                    </tbody>
+                </table>
             </div>
 
         </div>
@@ -215,6 +231,51 @@
             <input type="submit" value="Submit"/>
         </form>
     </div>
+
+    <div id="dialog3" title="Add new Article">
+        <form method="POST" action="/article/add" enctype="multipart/form-data" id="articleForm" onsubmit="return addNewArticleSubmit()">
+            <input name="articleJournalISSN" type="text" id="articleJournalISSN" style="display:none">
+            <p>Title</p>
+            <input name="dArticleTitle" type="text" id="dArticleTitle">
+            <input name="dArticleAuthor" type="text" id="dArticleAuthor" style="display:none">
+            <p>Keywords</p>
+            <input name="dArticleKeywords" type="tags" id="dArticleKeywords" data-role="tagsinput">
+            <p>Abstract</p>
+            <input name="dArticleAbstract" type="text" id="dArticleAbstract">
+            <p>Article Area</p>
+            <select multiple id="DarticleCodeSelect" name="dArticleAreaCodes">
+                <option value="empty">Empty</option>
+            </select>
+            </br>
+            <p>Select PDF</p>
+            <input type="file" name="file" id="articleFile" />
+            <hr>
+            Add Co-Authors: <input type="checkbox" id="myCheck" onclick="checkCoAutors()">
+            <div id="coAuthors" style="display:none">
+                <br/><br/>
+                <p><b>Co-Author 1: </b></p>
+                <p>Name</p></p><input name="otherAuthors1Name" type="text" id="otherAuthors1Name">
+                <p>Email</p></p><input name="otherAuthors1Email" type="text" id="otherAuthors1Email">
+                <p>City</p></p><input name="otherAuthors1City" type="text" id="otherAuthors1City">
+                <p>Country</p></p><input name="otherAuthors1Country" type="text" id="otherAuthors1Country">
+                <br/><br/>
+                <p><b>Co-Author 2: </b></p>
+                <p>Name</p></p><input name="otherAuthors2Name" type="text" id="otherAuthors2Name">
+                <p>Email</p></p><input name="otherAuthors2Email" type="text" id="otherAuthors2Email">
+                <p>City</p></p><input name="otherAuthors2City" type="text" id="otherAuthors2City">
+                <p>Country</p></p><input name="otherAuthors2Country" type="text" id="otherAuthors2Country">
+                <br/><br/>
+                <p><b>Co-Author 3: </b></p>
+                <p>Name</p></p><input name="otherAuthors3Name" type="text" id="otherAuthors3Name">
+                <p>Email</p></p><input name="otherAuthors3Email" type="text" id="otherAuthors3Email">
+                <p>City</p></p><input name="otherAuthors3City" type="text" id="otherAuthors3City">
+                <p>Country</p></p><input name="otherAuthors3Country" type="text" id="otherAuthors3Country">
+            </div>
+            <br/><br/>
+            <input type="submit" value="Submit"/>
+        </form>
+    </div>
+
 </div>
 </body>
 </html>

@@ -1,6 +1,8 @@
 var x = document.cookie;
 var parts = x.split("email@");
 var second = parts[1];
+var addArticleAreas;
+var addArticleISSN;
 
 var email;
 var type;
@@ -17,6 +19,9 @@ $(document).ready(function(){
    $('#areaCodeTable').hide();
    $('#journalTable').hide();
    $('#allMagazines').show();
+   $('#aboutMagazine').hide();
+   $('#articles').hide();
+   $('#addArticleButton').hide();
    getAllMagazines();
     $( function() {
           $("#dialog").dialog({
@@ -47,6 +52,21 @@ $(document).ready(function(){
          });
 
      });
+
+     $( function() {
+          $("#dialog3").dialog({
+               autoOpen: false,
+               show: {
+                   effect: "blind",
+                   duration: 500
+                   },
+               hide: {
+                   effect: "explode",
+                   duration: 500
+                   }
+          });
+
+      });
 
    if("undefined" !== typeof second){
        $('#usernamePlace').show();
@@ -94,6 +114,9 @@ function searchItems(){
     $('#allMagazines').hide();
     $("#dialog").dialog('close');
     $("#dialog2").dialog('close');
+    $('#aboutMagazine').hide();
+    $('#articles').hide();
+    $('#addArticleButton').hide();
     alert("search");
 }
 
@@ -102,7 +125,9 @@ function newJournal(){
     $('#journalTable').hide();
     $("#dialog").dialog('close');
     $("#dialog2").dialog('open');
-    $('#allMagazines').hide();
+    $('#aboutMagazine').hide();
+    $('#articles').hide();
+    $('#addArticleButton').hide();
 
     $.ajax({
         type: 'GET',
@@ -215,6 +240,9 @@ function allJournals(){
     $("#dialog").dialog('close');
     $("#dialog2").dialog('close');
     $('#allMagazines').hide();
+    $('#aboutMagazine').hide();
+    $('#articles').hide();
+    $('#addArticleButton').hide();
 
     $.ajax({
             type: 'GET',
@@ -276,6 +304,9 @@ function newAreaCode(){
     $("#dialog").dialog("open");
     $("#dialog2").dialog('close');
     $('#allMagazines').hide();
+    $('#aboutMagazine').hide();
+    $('#articles').hide();
+    $('#addArticleButton').hide();
 
 }
 
@@ -322,6 +353,9 @@ function allAreaCodes(){
     $('#areaCodeTable').show();
     $('#journalTable').hide();
     $('#allMagazines').hide();
+    $('#aboutMagazine').hide();
+    $('#articles').hide();
+    $('#addArticleButton').hide();
     $.ajax({
         type: 'GET',
         url: 'areacode/getAll',
@@ -364,11 +398,115 @@ function getAllMagazines(){
             if(data.length > 0){
                 for(var i =0; i<data.length; i++){
                     var image = data[i].image;
-                    $("#magazineTable").append('<div class="column"><img src="data:image/png;base64,' + image.data + '"/ style="width:100%" class="zoom"></br><p align="center"><b> ' + data[i].name + ' </b></p></div>');
+                    $("#magazineTable").append('<div class="column"><a href="#" onclick="openMagazine(\''+ data[i].issnnumber +'\')"><img src="data:image/png;base64,' + image.data + '"/ style="width:100%" class="zoom"></a></br><p align="center"><b> ' + data[i].name + ' </b></p></div>');
                 }
             }else{
                 $("#magazineTable").append('No Magazines!');
             }
         }
     });
+}
+
+function openMagazine(issnnumber){
+    $('#allMagazines').hide();
+    $('#aboutMagazine').show();
+    $('#articles').show();
+
+    if(type === "author") {
+       $('#addArticleButton').show();
+    }
+
+    addArticleISSN = issnnumber;
+
+    var journalAreas = [];
+    $.ajax({
+        type: 'GET',
+        url: 'journal/getJournal',
+        dataType: 'json',
+        data: {ISSNNumber : issnnumber},
+        success: function(data){
+                    console.log(data);
+                    $("#aboutMagazine tbody").empty();
+                    var areaCodes = data.areaCodes;
+                    addArticleAreas = areaCodes;
+                    var chiefEditor = data.chiefEditor;
+                    var image = data.image;
+                    $("#aboutMagazine").append('<tr><td><img src="data:image/png;base64,' + image.data + '"/ class="aboutMagazinePic"></td></tr><tr><td>ISSNNumber: ' + data.issnnumber + '</td></tr><tr><td>Name: ' + data.name + '</td></tr><tr><td>Chief Editor: ' + chiefEditor.firstName + ' ' + chiefEditor.lastName + '</td></tr><tr><td>Chief Editor email: ' + chiefEditor.email + '</td></tr>');
+                    for(var i =0; i<areaCodes.length; i++){
+                        $("#aboutMagazine").append('<tr><td>Area: ' + areaCodes[i].name + '</td></tr>');
+                    }
+                }
+    });
+
+
+}
+
+function addArticleButton(){
+    $("#dialog3").dialog('open');
+    $("#dArticleAuthor").val(email);
+    $('#dArticleKeywords').tagsInput({'width':'250px' });
+    $("#articleJournalISSN").val(addArticleISSN);
+
+     $("#DarticleCodeSelect option[value='empty']").remove();
+    for(var i =0; i<addArticleAreas.length; i++){
+        $("#DarticleCodeSelect").append('<option>' + addArticleAreas[i].name + '</option>');
+    }
+
+}
+
+function checkCoAutors(){
+    var checkBox = document.getElementById("myCheck");
+    var text = document.getElementById("coAuthors");
+    if(checkBox.checked == true){
+      text.style.display = "block";
+    }else{
+       text.style.display = "none";
+    }
+}
+
+function addNewArticleSubmit(){
+        var ok = true;
+
+        var i = document.getElementsByName('dArticleTitle');
+        var dArticleTitle = i[0].value;
+
+        var j = document.getElementsByName('dArticleKeywords');
+        var dArticleKeywords = j[0].value;
+
+        var k = document.getElementsByName('dArticleAbstract');
+        var dArticleAbstract = k[0].value;
+
+        var dArticleArea = $('#DarticleCodeSelect').find(":selected").text();
+
+
+
+        if(dArticleTitle==""){
+            toastr.error("You must enter Article Title!");
+            ok = false;
+        }
+
+        if(dArticleKeywords==""){
+            toastr.error("You must enter Article Keywords!");
+            ok = false;
+        }
+
+        if(dArticleAbstract==""){
+            toastr.error("You must enter Abstract!");
+            ok = false;
+        }
+
+        if(dArticleArea==""){
+            toastr.error("You must choose Article Area!");
+            ok = false;
+        }
+
+        if( document.getElementById("articleFile").files.length == 0 ){
+            toastr.error("You must choose File!");
+            ok = false;
+        }
+
+        if(ok)
+           alert("New Article has been successfully added!");
+
+        return ok;
 }

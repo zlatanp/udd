@@ -297,6 +297,8 @@ if("undefined" !== typeof cookie){
                 area.push($(this).val());
             });
             //alert("You have selected the country - " + area.join(", "));
+        }else{
+            area.push("empty");
         }
 
     	if(emailValue=="" || passwordValue=="" || password1Value=="" || nameValue=="" || lastnameValue=="" || cityValue=="" || countryValue==""){
