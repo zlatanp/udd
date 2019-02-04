@@ -129,6 +129,10 @@
                             </p>
                             <button type="button" onclick="return allAreaCodes()" class="btn btn-default">All Area Codes</button>
                         </div>
+                        <div class="authorCenter">
+                            <h3>You have one pending review!</h3>
+                            <button onclick="reviewArticles()">Review Articles</button>
+                        </div>
                         </br>
                         <table id="aboutMagazine">
                             </tbody>
@@ -174,6 +178,11 @@
             <div id="articles">
                 <h3>Articles: </h3>
                 <table id="articleTable">
+                    <thead>
+                        <tr>
+                            <th style="width:10%">Title</th><th style="width:20%">Abstract</th><th style="width:20%">Author</th><th style="width:30%">Other Authors</th><th style="width:50%">Area</th><th style="width:20%">Attachment</th>
+                        </tr>
+                    </thead>
                     </tbody>
                 </table>
             </div>

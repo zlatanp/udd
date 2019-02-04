@@ -22,6 +22,7 @@ $(document).ready(function(){
    $('#aboutMagazine').hide();
    $('#articles').hide();
    $('#addArticleButton').hide();
+   $('.authorCenter').hide();
    getAllMagazines();
     $( function() {
           $("#dialog").dialog({
@@ -84,6 +85,7 @@ $(document).ready(function(){
 
        if(type === "chiefeditor") {
            $('.adminLeft').hide();
+           getNotifications();
        }
 
        if(type === "admin") {
@@ -117,6 +119,7 @@ function searchItems(){
     $('#aboutMagazine').hide();
     $('#articles').hide();
     $('#addArticleButton').hide();
+    $('.authorCenter').hide();
     alert("search");
 }
 
@@ -128,6 +131,7 @@ function newJournal(){
     $('#aboutMagazine').hide();
     $('#articles').hide();
     $('#addArticleButton').hide();
+    $('.authorCenter').hide();
 
     $.ajax({
         type: 'GET',
@@ -243,6 +247,7 @@ function allJournals(){
     $('#aboutMagazine').hide();
     $('#articles').hide();
     $('#addArticleButton').hide();
+    $('.authorCenter').hide();
 
     $.ajax({
             type: 'GET',
@@ -307,6 +312,7 @@ function newAreaCode(){
     $('#aboutMagazine').hide();
     $('#articles').hide();
     $('#addArticleButton').hide();
+    $('.authorCenter').hide();
 
 }
 
@@ -356,6 +362,7 @@ function allAreaCodes(){
     $('#aboutMagazine').hide();
     $('#articles').hide();
     $('#addArticleButton').hide();
+    $('.authorCenter').hide();
     $.ajax({
         type: 'GET',
         url: 'areacode/getAll',
@@ -411,6 +418,7 @@ function openMagazine(issnnumber){
     $('#allMagazines').hide();
     $('#aboutMagazine').show();
     $('#articles').show();
+    $('.authorCenter').hide();
 
     if(type === "author") {
        $('#addArticleButton').show();
@@ -438,7 +446,24 @@ function openMagazine(issnnumber){
                 }
     });
 
-
+    $.ajax({
+        type: 'GET',
+        url: 'article/getArticleForMagazine',
+        dataType: 'json',
+        data: {ISSNNumber : issnnumber},
+        success: function(data){
+                    console.log(data);
+                    $("#articleTable tbody").empty();
+                    for(var i =0; i<data.length; i++){
+                        if(data[i].status !== "PENDING"){
+                            var author = data[i].author;
+                            var area = data[i].areaCode;
+                            var file = data[i].file;
+                            $("#articleTable").append('<tr><td>' + data[i].title + '</td><td>' + data[i].apstract + '</td><td>' + author.firstName + ' ' + author.lastName + '</td><td>' + data[i].otherAuthors + '</td><td>' + area.name + '</td><td><a href="#" onclick="openAttachment(\''+ file.data +'\')">Open PDF</a></td></tr>');
+                        }
+                    }
+                }
+    });
 }
 
 function addArticleButton(){
@@ -509,4 +534,88 @@ function addNewArticleSubmit(){
            alert("New Article has been successfully added!");
 
         return ok;
+}
+
+function getNotifications(){
+    $.ajax({
+        type: 'GET',
+        url: 'article/checkReview',
+        dataType: 'json',
+        data: {email : email},
+        success: function(data){
+                    console.log(data);
+                    if(data.length > 0){
+                        $('.authorCenter').show();
+                    }
+                }
+    });
+}
+
+function reviewArticles(){
+    $('#allMagazines').hide();
+    $('#articles').show();
+    $.ajax({
+        type: 'GET',
+        url: 'article/checkReview',
+        dataType: 'json',
+        data: {email : email},
+        success: function(data){
+                    $("#articleTable tbody").empty();
+                    console.log(data);
+                    for(var i =0; i<data.length; i++){
+                        var author = data[i].author;
+                        var area = data[i].areaCode;
+                        var file = data[i].file;
+                        $("#articleTable").append('<tr><td>' + data[i].title + '</td><td>' + data[i].apstract + '</td><td>' + author.firstName + ' ' + author.lastName + '</td><td>' + data[i].otherAuthors + '</td><td>' + area.name + '</td><td><a href="#" onclick="openAttachment(\''+ file.data +'\')">Open PDF</a></td><td><button onclick="acceptArticle(\''+ data[i].id +'\')">✔️</button></td><td><button onclick="rejectArticle(\''+ data[i].id +'\')">X</button></td></tr>');
+                    }
+                }
+    });
+}
+
+function acceptArticle(id){
+    $.ajax({
+        type: 'POST',
+        url: 'article/acceptArticle',
+        dataType: 'json',
+        data: {id : id},
+        complete: function(data){
+            alert("Article successfully accepted!");
+            location.reload();
+        }
+    });
+}
+
+function rejectArticle(id){
+    $.ajax({
+        type: 'POST',
+        url: 'article/deleteArticle',
+        dataType: 'json',
+        data: {id : id},
+        complete: function(data){
+            alert("Article successfully rejected!");
+            location.reload();
+        }
+    });
+}
+
+function openAttachment(data){
+//       let a = document.createElement("a");
+//       a.href = "data:application/octet-stream;base64,"+data;
+//       a.download = "documentName.pdf"
+//       a.click();
+    var objbuilder = '';
+    objbuilder += ('<object width="100%" height="100%"      data="data:application/pdf;base64,');
+    objbuilder += (data);
+    objbuilder += ('" type="application/pdf" class="internal">');
+    objbuilder += ('<embed src="data:application/pdf;base64,');
+    objbuilder += (data);
+    objbuilder += ('" type="application/pdf" />');
+    objbuilder += ('</object>');
+
+    var win = window.open("","_blank","titlebar=yes");
+    win.document.title = "My Title";
+    win.document.write('<html><body>');
+    win.document.write(objbuilder);
+    win.document.write('</body></html>');
+    layer = jQuery(win.document);
 }

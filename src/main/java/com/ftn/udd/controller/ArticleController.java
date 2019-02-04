@@ -1,6 +1,8 @@
 package com.ftn.udd.controller;
 
 import com.ftn.udd.model.Article;
+import com.ftn.udd.model.Journal;
+import com.ftn.udd.model.User;
 import com.ftn.udd.repository.AreaCodeRepository;
 import com.ftn.udd.repository.ArticleRepository;
 import com.ftn.udd.repository.JournalRepository;
@@ -12,16 +14,14 @@ import com.mongodb.MongoClient;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/article")
@@ -83,10 +83,55 @@ public class ArticleController {
             article.setFile(new Binary(BsonBinarySubType.BINARY, file.getBytes()));
         } catch (IOException e) {
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+            response.setHeader("Location", "http://localhost:8080/");
         }
 
-
         articleRepository.save(article);
+
+        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+        response.setHeader("Location", "http://localhost:8080/");
+
+    }
+
+    @RequestMapping(value = "/getArticleForMagazine", method = RequestMethod.GET, produces = "application/json")
+    public List<Article> getArticles(@RequestParam("ISSNNumber") String ISSNNumber){
+
+        return articleRepository.getByJournalISSNnumber(ISSNNumber);
+
+    }
+
+    @RequestMapping(value = "/checkReview", method = RequestMethod.GET, produces = "application/json")
+    public ArrayList<Article> getReviews(@RequestParam("email") String email){
+
+        Journal journal = journalRepository.findByChiefEditor(userRepository.findByEmail(email));
+
+        List<Article> articles = articleRepository.getByJournalISSNnumber(journal.getISSNNumber());
+        ArrayList<Article> articleArrayList = new ArrayList<Article>();
+        for (Article ar : articles) {
+            if (ar.getStatus().equals("PENDING"))
+                articleArrayList.add(ar);
+        }
+
+        return articleArrayList;
+
+    }
+
+    @RequestMapping(value = "/deleteArticle", method = RequestMethod.POST, produces = "application/json")
+    public void deleteArticle(HttpServletResponse response, @RequestParam("id") String id){
+
+        articleRepository.deleteById(id);
+
+    }
+
+    @RequestMapping(value = "/acceptArticle", method = RequestMethod.POST, produces = "application/json")
+    public void acceptArticle(HttpServletResponse response, @RequestParam("id") String id){
+
+        Article article = articleRepository.findById(id).get();
+        article.setStatus("ACTIVE");
+        articleRepository.save(article);
+
+        //indexing stuff
 
     }
 }

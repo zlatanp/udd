@@ -24,8 +24,6 @@ public class Article {
     private String status;
     private List<String> otherAuthors;
     private Binary file;
-    // private PDF
-    // private Final PDF
 
 
     public Article(String id, String journalISSNnumber, String title, User author, List<String> keywords, String apstract, AreaCode areaCode, String status, List<String> otherAuthors, Binary file) {
