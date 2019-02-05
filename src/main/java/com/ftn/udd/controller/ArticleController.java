@@ -1,16 +1,10 @@
 package com.ftn.udd.controller;
 
 import com.ftn.udd.model.Article;
+import com.ftn.udd.model.ElasticArticle;
 import com.ftn.udd.model.Journal;
 import com.ftn.udd.model.User;
-import com.ftn.udd.repository.AreaCodeRepository;
-import com.ftn.udd.repository.ArticleRepository;
-import com.ftn.udd.repository.JournalRepository;
-import com.ftn.udd.repository.UserRepository;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
+import com.ftn.udd.repository.*;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/article")
@@ -39,6 +31,9 @@ public class ArticleController {
     @Autowired
     private ArticleRepository articleRepository;
 
+    @Autowired
+    private ElasticArticleRepository elasticArticleRepository;
+
     @PostMapping("/add")
     public void addArticleWitAuthors(HttpServletResponse response, @RequestParam("articleJournalISSN") String iSSNNumber, @RequestParam("dArticleTitle") String dArticleTitle, @RequestParam("dArticleAuthor") String dArticleAuthor, @RequestParam("dArticleKeywords") String[] dArticleKeywords, @RequestParam("dArticleAbstract") String dArticleAbstract, @RequestParam("dArticleAreaCodes") String dArticleAreaCodes, @RequestParam("file") MultipartFile file,
                                      @RequestParam("otherAuthors1Name") String otherAuthors1Name, @RequestParam("otherAuthors1Email") String otherAuthors1Email, @RequestParam("otherAuthors1City") String otherAuthors1City, @RequestParam("otherAuthors1Country") String otherAuthors1Country,
@@ -50,8 +45,11 @@ public class ArticleController {
         System.out.println(otherAuthors2Name + " " + otherAuthors2Email + " " + otherAuthors2City + " " +otherAuthors2Country);
         System.out.println(otherAuthors3Name + " " + otherAuthors3Email + " " + otherAuthors3City + " " +otherAuthors3Country);
 
+        Journal journal = journalRepository.findById(iSSNNumber).get();
+
         Article article = new Article();
         article.setJournalISSNnumber(iSSNNumber);
+        article.setJournalTitle(journal.getName());
         article.setTitle(dArticleTitle);
         article.setAuthor(userRepository.findByEmail(dArticleAuthor));
         article.setKeywords(Arrays.asList(dArticleKeywords));
@@ -60,20 +58,20 @@ public class ArticleController {
         article.setStatus("PENDING");
 
 
-        ArrayList<String> otherAuthors = new ArrayList<String>();
+        ArrayList<User> otherAuthors = new ArrayList<User>();
 
         if(!otherAuthors1Name.equals("") && !otherAuthors1Email.equals("") && !otherAuthors1City.equals("") && !otherAuthors1Country.equals("")){
-            String author1 = "Email: " + otherAuthors1Email + " Name: " + otherAuthors1Name + " City: " + otherAuthors1City + " Country: " + otherAuthors1Country;
+            User author1 = new User(otherAuthors1Email, otherAuthors1Name, otherAuthors1City, otherAuthors1Country);
             otherAuthors.add(author1);
         }
 
         if(!otherAuthors2Name.equals("") && !otherAuthors2Email.equals("") && !otherAuthors2City.equals("") && !otherAuthors2Country.equals("")){
-            String author2 = "Email: " + otherAuthors2Email + " Name: " + otherAuthors2Name + " City: " + otherAuthors2City + " Country: " + otherAuthors2Country;
+            User author2 = new User(otherAuthors2Email, otherAuthors2Name, otherAuthors2City, otherAuthors2Country);
             otherAuthors.add(author2);
         }
 
         if(!otherAuthors3Name.equals("") && !otherAuthors3Email.equals("") && !otherAuthors3City.equals("") && !otherAuthors3Country.equals("")){
-            String author3 = "Email: " + otherAuthors3Email + " Name: " + otherAuthors3Name + " City: " + otherAuthors3City + " Country: " + otherAuthors3Country;
+            User author3 = new User(otherAuthors3Email, otherAuthors3Name, otherAuthors3City, otherAuthors3Country);
             otherAuthors.add(author3);
         }
 
@@ -132,6 +130,8 @@ public class ArticleController {
         articleRepository.save(article);
 
         //indexing stuff
+        ElasticArticle elasticArticle = new ElasticArticle(article);
+        elasticArticleRepository.save(elasticArticle);
 
     }
 }

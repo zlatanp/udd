@@ -33,4 +33,11 @@ public class User {
         this.userType = userType;
         this.areaCodes = areaCodes;
     }
+
+    public User(String email, String name, String city, String country){
+        this.email = email;
+        this.firstName = name;
+        this.city = city;
+        this.country = country;
+    }
 }

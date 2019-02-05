@@ -120,7 +120,15 @@ function searchItems(){
     $('#articles').hide();
     $('#addArticleButton').hide();
     $('.authorCenter').hide();
-    alert("search");
+
+    $.ajax({
+        type: 'GET',
+        url: 'elastic/getAll',
+        dataType: 'json',
+        success: function(data){
+                    console.log(data);
+                 }
+    });
 }
 
 function newJournal(){
@@ -459,7 +467,7 @@ function openMagazine(issnnumber){
                             var author = data[i].author;
                             var area = data[i].areaCode;
                             var file = data[i].file;
-                            $("#articleTable").append('<tr><td>' + data[i].title + '</td><td>' + data[i].apstract + '</td><td>' + author.firstName + ' ' + author.lastName + '</td><td>' + data[i].otherAuthors + '</td><td>' + area.name + '</td><td><a href="#" onclick="openAttachment(\''+ file.data +'\')">Open PDF</a></td></tr>');
+                            $("#articleTable").append('<tr><td>' + data[i].title + '</td><td>' + data[i].apstract + '</td><td>' + author.firstName + ' ' + author.lastName + '</td><td>' + area.name + '</td><td><a href="#" onclick="openAttachment(\''+ file.data +'\')">Open PDF</a></td></tr>');
                         }
                     }
                 }
@@ -482,6 +490,26 @@ function addArticleButton(){
 function checkCoAutors(){
     var checkBox = document.getElementById("myCheck");
     var text = document.getElementById("coAuthors");
+    if(checkBox.checked == true){
+      text.style.display = "block";
+    }else{
+       text.style.display = "none";
+    }
+}
+
+function checkCoAutors2(){
+    var checkBox = document.getElementById("myCheck2");
+    var text = document.getElementById("coAuthors2");
+    if(checkBox.checked == true){
+      text.style.display = "block";
+    }else{
+       text.style.display = "none";
+    }
+}
+
+function checkCoAutors3(){
+    var checkBox = document.getElementById("myCheck3");
+    var text = document.getElementById("coAuthors3");
     if(checkBox.checked == true){
       text.style.display = "block";
     }else{
@@ -566,7 +594,7 @@ function reviewArticles(){
                         var author = data[i].author;
                         var area = data[i].areaCode;
                         var file = data[i].file;
-                        $("#articleTable").append('<tr><td>' + data[i].title + '</td><td>' + data[i].apstract + '</td><td>' + author.firstName + ' ' + author.lastName + '</td><td>' + data[i].otherAuthors + '</td><td>' + area.name + '</td><td><a href="#" onclick="openAttachment(\''+ file.data +'\')">Open PDF</a></td><td><button onclick="acceptArticle(\''+ data[i].id +'\')">✔️</button></td><td><button onclick="rejectArticle(\''+ data[i].id +'\')">X</button></td></tr>');
+                        $("#articleTable").append('<tr><td>' + data[i].title + '</td><td>' + data[i].apstract + '</td><td>' + author.firstName + ' ' + author.lastName + '</td><td>' + area.name + '</td><td><a href="#" onclick="openAttachment(\''+ file.data +'\')">Open PDF</a></td><td><button onclick="acceptArticle(\''+ data[i].id +'\')">✔️</button></td><td><button onclick="rejectArticle(\''+ data[i].id +'\')">X</button></td></tr>');
                     }
                 }
     });

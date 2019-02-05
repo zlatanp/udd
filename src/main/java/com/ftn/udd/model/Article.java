@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.List;
 
@@ -16,19 +17,20 @@ public class Article {
     @Id
     private String id;
     private String journalISSNnumber;
+    private String journalTitle;
     private String title;
     private User author;
     private List<String> keywords;
     private String apstract;
     private AreaCode areaCode;
     private String status;
-    private List<String> otherAuthors;
+    private List<User> otherAuthors;
     private Binary file;
 
 
-    public Article(String id, String journalISSNnumber, String title, User author, List<String> keywords, String apstract, AreaCode areaCode, String status, List<String> otherAuthors, Binary file) {
-        this.id = id;
+    public Article(String journalISSNnumber, String journalTitle, String title, User author, List<String> keywords, String apstract, AreaCode areaCode, String status, List<User> otherAuthors, Binary file) {
         this.journalISSNnumber = journalISSNnumber;
+        this.journalTitle = journalTitle;
         this.title = title;
         this.author = author;
         this.keywords = keywords;
