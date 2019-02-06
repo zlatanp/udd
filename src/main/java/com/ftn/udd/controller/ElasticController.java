@@ -3,8 +3,10 @@ package com.ftn.udd.controller;
 import com.ftn.udd.model.ElasticArticle;
 import com.ftn.udd.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -32,7 +34,21 @@ public class ElasticController {
 
     //Pretraživanje radova po nazivu časopisa.
 
+    @RequestMapping(value = "/getArticleByJournalTitle", method = RequestMethod.GET, produces = "application/json")
+    public List<ElasticArticle> getArticleByJournalTitle(@RequestParam("journalTitle") String journalTitle, @RequestParam("pageFrom") int from){
+
+        return elasticArticleRepository.findByJournalTitle(journalTitle, PageRequest.of(from,10));
+
+    }
+
     //Pretraživanje radova po naslovu rada.
+
+    @RequestMapping(value = "/getArticleByName", method = RequestMethod.GET, produces = "application/json")
+    public List<ElasticArticle> getArticleByName(@RequestParam("articleName") String articleName){
+
+        return elasticArticleRepository.findByTitle(articleName);
+
+    }
 
     //Pretraživanje radova po imenima i prezimenima autora.
 
@@ -48,9 +64,10 @@ public class ElasticController {
 
     //Pretprocesirati upit pomoću SerbianAnalyzer-a.
 
+    //Front:
     //Prilikom prikaza rezultata kreirati dinamički sažetak (Highlighter).
 
-    //Prilikom prikaza rezultata ponuditi i link za preuzimanje rada ako je objavljen u open-access časopisu, a ako nije onda taster za kupovinu članarine („dodaj u korpu“)
+    //Prilikom prikaza rezultata ponuditi i link za preuzimanje rada
 
     @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
     public List<ElasticArticle> getAll(){
@@ -61,4 +78,6 @@ public class ElasticController {
         }
         return ar;
     }
+
+
 }
