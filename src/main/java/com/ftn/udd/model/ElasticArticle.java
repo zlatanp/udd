@@ -23,9 +23,9 @@ public class ElasticArticle {
     private List<String> keywords;
     private String apstract;
     private AreaCode areaCode;
-    private String status;
     private List<User> otherAuthors;
     private String filename;
+    private String content;
 
 
     public ElasticArticle(Article article) {
@@ -36,8 +36,8 @@ public class ElasticArticle {
         this.keywords = article.getKeywords();
         this.apstract = article.getApstract();
         this.areaCode = article.getAreaCode();
-        this.status = article.getStatus();
         this.otherAuthors = article.getOtherAuthors();
         this.filename = article.getId();
+        this.content = article.getContent();
     }
 }

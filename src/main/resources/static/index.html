@@ -13,6 +13,7 @@
     <script src="html/js/toastr.js"></script>
     <script src="html/js/toastr.min.js"></script>
     <script src="html/js/homescript.js"></script>
+    <script src="html/js/mark.min.js"></script>
 
     <script src="html/js/jquery.tagsinput.js"></script>
     <link rel="stylesheet" type="text/css" href="html/js/jquery.tagsinput.css" />
@@ -120,6 +121,46 @@
             <div class="navbar-form navbar-left">
                 <div class="form-group">
                     <div class="form-group" style="color: white">
+
+                        <div id="searchDiv">
+                            <h2>Search</h2>
+                            <p>Magazine name: </p>
+                            <input name="searchMagazineName" type="text" id="searchMagazineName" size="30">
+                            </p>
+                            <p>Article name: </p>
+                            <input name="searchArticleName" type="text" id="searchArticleName" size="30">
+                            </p>
+                            <p>Authors name: </p>
+                            <input name="searchAuthors" type="text" id="searchAuthors" data-role="tagsinput">
+                            </p>
+                            <p>Keywords: </p>
+                            <input name="searchKeywords" type="text" id="searchKeywords" data-role="tagsinput">
+                            </p>
+                            <p>PDF Content: </p>
+                            <input name="searchPdfContent" type="text" id="searchPdfContent" size="30">
+                            </p>
+                            <p>Area Name: </p>
+                            <select multiple id="searchAreaNameSelect" name="searchAreaNameSelect">
+                                <option value="empty">Empty</option>
+                            </select>
+                            </p>
+                            <p>Combine Previous Fields?
+                                <input type="checkbox" id="searchMyCheck" onclick="searchMyChecked()" size="30"></p>
+                            </p>
+                            <div id="searchOperation" style="display:none">
+                                <p>Choose logical operation:
+                                    <select id="searchOperationSelect" name="searchOperationSelect">
+                                        <option value="AND">AND</option>
+                                        <option value="OR">OR</option>
+                                    </select>
+                                </p>
+                                </p>
+                                </p>
+                            </div>
+                            <button onclick="return searchSomeArticles()">Search!</button>
+
+                        </div>
+
                         <div class="adminLeft">
                             <button type="button" onclick="return newJournal()" class="btn btn-default">Add New Journal</button>
                             </p>
@@ -129,6 +170,7 @@
                             </p>
                             <button type="button" onclick="return allAreaCodes()" class="btn btn-default">All Area Codes</button>
                         </div>
+
                         <div class="authorCenter">
                             <h3>You have one pending review!</h3>
                             <button onclick="reviewArticles()">Review Articles</button>
@@ -185,6 +227,9 @@
                     </thead>
                     </tbody>
                 </table>
+            </div>
+            <div id="searchDivResult" >
+                <h2>Results:</h2>
             </div>
 
         </div>

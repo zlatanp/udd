@@ -26,9 +26,10 @@ public class Article {
     private String status;
     private List<User> otherAuthors;
     private Binary file;
+    private String content;
 
 
-    public Article(String journalISSNnumber, String journalTitle, String title, User author, List<String> keywords, String apstract, AreaCode areaCode, String status, List<User> otherAuthors, Binary file) {
+    public Article(String journalISSNnumber, String journalTitle, String title, User author, List<String> keywords, String apstract, AreaCode areaCode, String status, List<User> otherAuthors, Binary file, String content) {
         this.journalISSNnumber = journalISSNnumber;
         this.journalTitle = journalTitle;
         this.title = title;
@@ -39,5 +40,6 @@ public class Article {
         this.status = status;
         this.otherAuthors = otherAuthors;
         this.file = file;
+        this.content = content;
     }
 }

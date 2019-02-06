@@ -5,6 +5,7 @@ import com.ftn.udd.model.ElasticArticle;
 import com.ftn.udd.model.Journal;
 import com.ftn.udd.model.User;
 import com.ftn.udd.repository.*;
+import com.ftn.udd.service.MultipartToPDF;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/article")
@@ -34,6 +37,8 @@ public class ArticleController {
     @Autowired
     private ElasticArticleRepository elasticArticleRepository;
 
+    private MultipartToPDF multipartToPDF = new MultipartToPDF();
+
     @PostMapping("/add")
     public void addArticleWitAuthors(HttpServletResponse response, @RequestParam("articleJournalISSN") String iSSNNumber, @RequestParam("dArticleTitle") String dArticleTitle, @RequestParam("dArticleAuthor") String dArticleAuthor, @RequestParam("dArticleKeywords") String[] dArticleKeywords, @RequestParam("dArticleAbstract") String dArticleAbstract, @RequestParam("dArticleAreaCodes") String dArticleAreaCodes, @RequestParam("file") MultipartFile file,
                                      @RequestParam("otherAuthors1Name") String otherAuthors1Name, @RequestParam("otherAuthors1Email") String otherAuthors1Email, @RequestParam("otherAuthors1City") String otherAuthors1City, @RequestParam("otherAuthors1Country") String otherAuthors1Country,
@@ -46,19 +51,21 @@ public class ArticleController {
         System.out.println(otherAuthors3Name + " " + otherAuthors3Email + " " + otherAuthors3City + " " +otherAuthors3Country);
 
         Journal journal = journalRepository.findById(iSSNNumber).get();
+        User author = userRepository.findByEmail(dArticleAuthor);
 
         Article article = new Article();
         article.setJournalISSNnumber(iSSNNumber);
         article.setJournalTitle(journal.getName());
         article.setTitle(dArticleTitle);
-        article.setAuthor(userRepository.findByEmail(dArticleAuthor));
+        article.setAuthor(author);
         article.setKeywords(Arrays.asList(dArticleKeywords));
         article.setApstract(dArticleAbstract);
         article.setAreaCode(areaCodeRepository.findByName(dArticleAreaCodes));
         article.setStatus("PENDING");
 
-
         ArrayList<User> otherAuthors = new ArrayList<User>();
+        author.setFirstName(author.getFirstName() + " " + author.getLastName());
+        otherAuthors.add(author);
 
         if(!otherAuthors1Name.equals("") && !otherAuthors1Email.equals("") && !otherAuthors1City.equals("") && !otherAuthors1Country.equals("")){
             User author1 = new User(otherAuthors1Email, otherAuthors1Name, otherAuthors1City, otherAuthors1Country);
@@ -79,6 +86,7 @@ public class ArticleController {
 
         try {
             article.setFile(new Binary(BsonBinarySubType.BINARY, file.getBytes()));
+            article.setContent(multipartToPDF.convert(file));
         } catch (IOException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
@@ -132,6 +140,13 @@ public class ArticleController {
         //indexing stuff
         ElasticArticle elasticArticle = new ElasticArticle(article);
         elasticArticleRepository.save(elasticArticle);
+
+    }
+
+    @RequestMapping(value = "/getArticleById", method = RequestMethod.GET, produces = "application/json")
+    public Article getArticleById(HttpServletResponse response, @RequestParam("id") String id){
+
+       return articleRepository.findById(id).get();
 
     }
 }

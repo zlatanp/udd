@@ -23,6 +23,8 @@ $(document).ready(function(){
    $('#articles').hide();
    $('#addArticleButton').hide();
    $('.authorCenter').hide();
+   $('#searchDiv').hide();
+   $('#searchDivResult').hide();
    getAllMagazines();
     $( function() {
           $("#dialog").dialog({
@@ -120,15 +122,196 @@ function searchItems(){
     $('#articles').hide();
     $('#addArticleButton').hide();
     $('.authorCenter').hide();
+    $('#searchDiv').show();
+    $('#searchDivResult').show();
+    $('#searchKeywords').tagsInput({'width':'220px' });
+    $('#searchAuthors').tagsInput({'width':'220px' });
+
+    $("#searchAreaNameSelect").empty();
 
     $.ajax({
         type: 'GET',
-        url: 'elastic/getAll',
+        url: 'areacode/getAll',
         dataType: 'json',
         success: function(data){
-                    console.log(data);
-                 }
+            console.log(data);
+            if(data.length > 0){
+                $("#searchAreaNameSelect option[value='empty']").remove();
+                for(var i =0; i<data.length; i++){
+                    $('#searchAreaNameSelect').append('<option>' + data[i].name + '</option>');
+                }
+            }
+        }
     });
+}
+
+function searchMyChecked(){
+    var checkBox = document.getElementById("searchMyCheck");
+    var text = document.getElementById("searchOperation");
+    if(checkBox.checked == true){
+      text.style.display = "block";
+    }else{
+       text.style.display = "none";
+    }
+}
+
+function searchSomeArticles(){
+
+    $("#searchDivResult").empty("");
+    $("#searchDivResult").append("<h2>Results:</h2>");
+
+    var searchTerms = [];
+
+    var fieldCount = 0;
+
+    var i = document.getElementsByName('searchMagazineName');
+    var searchMagazineName = i[0].value;
+
+    var j = document.getElementsByName('searchArticleName');
+    var searchArticleName = j[0].value;
+
+    var searchAuthors = $("#searchAuthors").val();
+
+    var searchKeywords = $("#searchKeywords").val();
+
+    var l = document.getElementsByName('searchPdfContent');
+    var searchPdfContent = l[0].value;
+
+    var searchAreaName = $('#searchAreaNameSelect').find(":selected").text();
+
+    var checkBox = document.getElementById("searchMyCheck");
+
+    if(searchMagazineName=="" && searchArticleName=="" && searchAuthors=="" && searchKeywords=="" && searchPdfContent=="" && searchAreaName==""){
+        toastr.error("You must enter at least one parameter for search!");
+        return false;
+    }
+
+    if(searchMagazineName!=""){
+        fieldCount += 1;
+        searchTerms.push(searchMagazineName);
+    }
+
+    if(searchArticleName!=""){
+        fieldCount += 1;
+        searchTerms.push(searchArticleName);
+    }
+
+    if(searchAuthors!=""){
+       fieldCount += 1;
+       var searchAuthorsWords = searchAuthors.split(",");
+       for(var z =0; z<searchAuthorsWords.length; z++){
+           searchTerms.push(searchAuthorsWords[z]);
+       }
+    }
+
+    if(searchKeywords!=""){
+        fieldCount += 1;
+        var keywordWords = searchKeywords.split(",");
+        for(var z =0; z<keywordWords.length; z++){
+            searchTerms.push(keywordWords[z]);
+        }
+    }
+
+    if(searchPdfContent!=""){
+       fieldCount += 1;
+       searchTerms.push(searchPdfContent);
+    }
+
+    if(searchAreaName != ""){
+        fieldCount += 1;
+        searchTerms.push(searchAreaName);
+    }
+
+    var searchOperation;
+
+    if(checkBox.checked == true){
+        searchOperation = $('#searchOperationSelect').find(":selected").text();
+    }else{
+        searchOperation = "OR";
+    }
+
+    var filenameAddLater = [];
+
+    $.ajax({
+        type: 'POST',
+        url: 'elastic/getArticleCombined',
+        dataType: 'json',
+        data: {journalTitle : searchMagazineName, articleName : searchArticleName, authors : searchAuthors, articleKeywords : searchKeywords, articleContent : searchPdfContent, areaName : searchAreaName, operationType : searchOperation, fieldCount : fieldCount},
+        success: function(data){
+            console.log(data);
+            var resultSize = data.hits.total;
+            if(resultSize == 0){
+                $("#searchDivResult").append("<h2 style=\"color:red\">No Results!</h2>");
+            }else{
+                var resultList = data.hits.hits;
+                console.log(resultList);
+                for(var i =0; i<resultList.length; i++){
+                    var authorsResult = resultList[i]._source.otherAuthors;
+                    var tittle = resultList[i]._source.title;
+                    var filename = resultList[i]._source.filename;
+                    var keywordsResult = resultList[i]._source.keywords;
+                    var content = resultList[i]._source.content;
+                    filenameAddLater.push(filenameAddLater);
+                    $('#searchDivResult').append('<div style="text-align:left; border-style: groove" id="h4s' + filename + '"><h3><b>' + tittle + '</b></h3><h5><b>Abstract:</b> ' + resultList[i]._source.apstract + ', <b>Area:</b> ' + resultList[i]._source.areaCode.name + ', <b>Magazine:</b> ' + resultList[i]._source.journalTitle + '</h5></div>');
+
+                    //Author info
+                    for(var ii =0; ii<authorsResult.length; ii++){
+                        $('#h4s' + filename + '').append('<h5><b>Author:</b> ' + authorsResult[ii].firstName + '</h5>');
+
+                    }
+
+                    for(var ij =0; ij<keywordsResult.length; ij++){
+                        $('#h4s' + filename + '').append('<h5><b>Keyword:</b> ' + keywordsResult[ij] + '</h5>');
+
+                    }
+
+                    //Content
+                    if(searchPdfContent == ""){
+                    var contentToShow = content.split(/\s+/).slice(0,30).join(" ");
+                        $('#h4s' + filename + '').append('<h5><b>Content: </b> ' + contentToShow + '...</h5>');
+                    }else{
+                        var contentToShow = content.split(/\s+/).slice(0,content.length).join(" ");
+                        var contentList = contentToShow.split(" ");
+                        var findWord = searchPdfContent.split(" ");
+                        var contentResultString = "";
+
+                        for(var k = 0; k < findWord.length; k++){
+                            for (var l = 0; l < contentList.length - 1; l++) {
+                               if(findWord[k].toLowerCase() == contentList[l].toLowerCase()){
+                                    contentResultString += " .." + contentList[l-2] + " "+ contentList[l-1] + " " + contentList[l] + " " + contentList[l+1] + " " + contentList[l+2] + "..."
+                               }
+                            }
+                        }
+                        $('#h4s' + filename + '').append('<h5><b>Content: </b> ' + contentResultString + '...</h5>');
+                    }
+
+                    //Highlight
+                    var context = document.querySelector('#h4s' + filename + ''); // requires an element with class "context" to exist
+                    var instance = new Mark(context);
+                    instance.mark(searchTerms, { "accuracy": "exactly",
+                                                 "separateWordSearch" : false,
+                                                  "element": "span",
+                                                  "className": "highlightER"
+                                               }
+                                 );
+                    $.ajax({
+                        type: 'GET',
+                        url: 'article/getArticleById',
+                        dataType: 'json',
+                        async: false,
+                        data: {id : filename},
+                        success: function(data){
+                            console.log(data);
+                            $('#h4s' + filename + '').append('<a href="#" onclick="downloadAttachment(\''+ data.file.data +'\')">Download PDF</a>');
+                        }
+                    });
+                }
+            }
+          }
+    });
+
+    return false;
+
 }
 
 function newJournal(){
@@ -140,6 +323,8 @@ function newJournal(){
     $('#articles').hide();
     $('#addArticleButton').hide();
     $('.authorCenter').hide();
+    $('#searchDiv').hide();
+    $('#searchDivResult').hide();
 
     $.ajax({
         type: 'GET',
@@ -256,6 +441,8 @@ function allJournals(){
     $('#articles').hide();
     $('#addArticleButton').hide();
     $('.authorCenter').hide();
+    $('#searchDiv').hide();
+    $('#searchDivResult').hide();
 
     $.ajax({
             type: 'GET',
@@ -300,15 +487,15 @@ function getJournalAreas(ISSNNumber){
 
 function deleteJournal(ISSNNumber){
     $.ajax({
-            type: 'POST',
-            url: 'journal/deleteJournal',
-            dataType: 'json',
-            data: {ISSNNumber : ISSNNumber},
-            complete: function(data){
-                toastr.success("Successfully removed Journal with ISSNNumber " + ISSNNumber + " !");
-                allJournals();
-            }
-        });
+        type: 'POST',
+        url: 'journal/deleteJournal',
+        dataType: 'json',
+        data: {ISSNNumber : ISSNNumber},
+        complete: function(data){
+            toastr.success("Successfully removed Journal with ISSNNumber " + ISSNNumber + " !");
+            allJournals();
+        }
+    });
 }
 
 function newAreaCode(){
@@ -321,6 +508,8 @@ function newAreaCode(){
     $('#articles').hide();
     $('#addArticleButton').hide();
     $('.authorCenter').hide();
+    $('#searchDiv').hide();
+    $('#searchDivResult').hide();
 
 }
 
@@ -371,6 +560,9 @@ function allAreaCodes(){
     $('#articles').hide();
     $('#addArticleButton').hide();
     $('.authorCenter').hide();
+    $('#searchDiv').hide();
+    $('#searchDivResult').hide();
+
     $.ajax({
         type: 'GET',
         url: 'areacode/getAll',
@@ -427,6 +619,8 @@ function openMagazine(issnnumber){
     $('#aboutMagazine').show();
     $('#articles').show();
     $('.authorCenter').hide();
+    $('#searchDiv').hide();
+    $('#searchDivResult').hide();
 
     if(type === "author") {
        $('#addArticleButton').show();
@@ -467,7 +661,7 @@ function openMagazine(issnnumber){
                             var author = data[i].author;
                             var area = data[i].areaCode;
                             var file = data[i].file;
-                            $("#articleTable").append('<tr><td>' + data[i].title + '</td><td>' + data[i].apstract + '</td><td>' + author.firstName + ' ' + author.lastName + '</td><td>' + area.name + '</td><td><a href="#" onclick="openAttachment(\''+ file.data +'\')">Open PDF</a></td></tr>');
+                            $("#articleTable").append('<tr><td>' + data[i].title + '</td><td>' + data[i].apstract + '</td><td>' + author.firstName + '</td><td>' + area.name + '</td><td><a href="#" onclick="openAttachment(\''+ file.data +'\')">Open PDF</a></td></tr>');
                         }
                     }
                 }
@@ -582,6 +776,9 @@ function getNotifications(){
 function reviewArticles(){
     $('#allMagazines').hide();
     $('#articles').show();
+    $('#searchDiv').hide();
+    $('#searchDivResult').hide();
+
     $.ajax({
         type: 'GET',
         url: 'article/checkReview',
@@ -627,10 +824,6 @@ function rejectArticle(id){
 }
 
 function openAttachment(data){
-//       let a = document.createElement("a");
-//       a.href = "data:application/octet-stream;base64,"+data;
-//       a.download = "documentName.pdf"
-//       a.click();
     var objbuilder = '';
     objbuilder += ('<object width="100%" height="100%"      data="data:application/pdf;base64,');
     objbuilder += (data);
@@ -646,4 +839,11 @@ function openAttachment(data){
     win.document.write(objbuilder);
     win.document.write('</body></html>');
     layer = jQuery(win.document);
+}
+
+function downloadAttachment(data){
+       let a = document.createElement("a");
+       a.href = "data:application/octet-stream;base64,"+data;
+       a.download = "documentName.pdf"
+       a.click();
 }

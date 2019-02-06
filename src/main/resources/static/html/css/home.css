@@ -101,3 +101,15 @@ width: 250px;
 .authorCenter{
     color: red;
 }
+
+#searchDiv{
+    color: black;
+}
+
+#searchDivResult{
+    text-align:center;
+}
+
+.highlightER{
+    background-color: yellow;
+}
